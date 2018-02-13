@@ -101,6 +101,9 @@ class RiskTypeGenericTypeValue(models.Model):
 			):
 				raise ValidationError("Illegal value: DateValue is not a date.")
 
+	def comma_separated_enum_list(self, enum_string):
+		return [token.strip() for token in enum_string.split(',')]
+
 	def get_generic_type_value(self):
 		if self.RiskTypeGenericType.TypeAsText is 'text':
 			return self.TextValue
@@ -109,10 +112,11 @@ class RiskTypeGenericTypeValue(models.Model):
 		elif self.RiskTypeGenericType.TypeAsText is 'date':
 			return self.DateValue
 		elif self.RiskTypeGenericType.TypeAsText is 'enum':
-			return self.EnumValue
+			return self.comma_separated_enum_list(self.EnumValue)
 
 		return None
 
 	@property
 	def owner(self):
 		return self.RiskTypeGenericType.RiskType.User
+
