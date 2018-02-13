@@ -116,6 +116,21 @@ class RiskTypeTestCase(APITestCase):
 		response = self.client.post(uri, data, format="json")
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+	def test_post_risk_type_generic_type_enum_value(self):
+		data = {
+			"RiskType": RiskType.objects.first().pk,
+			"Type": "4",
+			"FieldTitle": "Some field with a number",
+			"FieldValue": "Type1, Type2.., Type3   ",
+		}
+		uri = reverse("api-risktypes:risktype-generic-type-c")
+		user = User.objects.first()
+		payload  = payload_handler(user)
+		token_response = encode_handler(payload)
+		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token_response)
+		response = self.client.post(uri, data, format="json")
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 	# Retrieve single RiskType
 	def test_get_risk_type(self):
 		data = {}
